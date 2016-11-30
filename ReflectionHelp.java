@@ -12,18 +12,15 @@ import java.lang.reflect.Method;
 public class ReflectionHelp {
 
     //调用构造函数
-    public static Object reflectConstructor(String packageName, String constructorName, Object... params) throws Exception{
+    public static Object reflectConstructor(String packageName, Object... params) throws Exception{
         Class<?> threadClass = Class.forName(packageName);
-        Method[] methods = threadClass.getMethods();
+        Constructor[] constructors = threadClass.getConstructors();
         Object object = null;
-        for (Method method:methods) {
-            if (constructorName.equals(method.getName())){
-                Class[] types = method.getParameterTypes();
-                if (isOk(types, params)) {
-                    Constructor constructor = threadClass.getConstructor(types);
-                    object = constructor.newInstance(params);
-                    break;
-                }
+        for (Constructor constructor:constructors) {
+            Class[] types = constructor.getParameterTypes();
+            if (isOk(types, params)) {
+                object = constructor.newInstance(params);
+                break;
             }
         }
         return object;
